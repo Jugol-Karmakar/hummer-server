@@ -42,6 +42,19 @@ async function run() {
       const result = await carCollection.deleteOne(query);
       res.send(result);
     });
+
+    app.post("/inventory", async (req, res) => {
+      const inventor = req.body;
+      const result = await carCollection.insertOne(inventor);
+      res.send(result);
+    });
+
+    // app.get("/inventory", async (req, res) => {
+    //   const query = {};
+    //   const cursor = carCollection.findOne(query);
+    //   const item = await cursor.toArray();
+    //   res.send(item);
+    // });
   } finally {
   }
 }
