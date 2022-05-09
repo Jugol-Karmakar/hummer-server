@@ -22,6 +22,8 @@ async function run() {
     await client.connect();
     const carCollection = client.db("hummer").collection("car");
 
+    // get inventory
+
     app.get("/inventory", async (req, res) => {
       const query = {};
       const cursor = carCollection.find(query);
@@ -36,6 +38,8 @@ async function run() {
       res.send(inventory);
     });
 
+    // delete inventory
+
     app.delete("/inventory/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
@@ -43,18 +47,22 @@ async function run() {
       res.send(result);
     });
 
+    // add new inventory
+
     app.post("/inventory", async (req, res) => {
       const inventor = req.body;
       const result = await carCollection.insertOne(inventor);
       res.send(result);
     });
 
-    // app.get("/inventory", async (req, res) => {
-    //   const query = {};
-    //   const cursor = carCollection.findOne(query);
-    //   const item = await cursor.toArray();
-    //   res.send(item);
-    // });
+    // get new inventory
+
+    app.get("/inventory", async (req, res) => {
+      const query = {};
+      const cursor = carCollection.findOne(query);
+      const item = await cursor.toArray();
+      res.send(item);
+    });
   } finally {
   }
 }
