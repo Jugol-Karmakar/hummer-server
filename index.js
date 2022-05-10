@@ -31,6 +31,15 @@ async function run() {
       res.send(cars);
     });
 
+    app.get("/inventory/filter", async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = carCollection.find(query);
+      const cars = await cursor.toArray();
+      console.log(cars);
+      res.send(cars);
+    });
+
     app.get("/inventory/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
