@@ -63,6 +63,23 @@ async function run() {
       const item = await cursor.toArray();
       res.send(item);
     });
+
+    // update inventory
+
+    app.put("/inventory/:id", async (req, res) => {
+      const id = req.params.id;
+      const updateQuantity = req.body;
+      console.log(updateQuantity);
+      const filter = { _id: ObjectId(id) };
+      const options = { upsert: true };
+      const updateDoc = {
+        $set: {
+          quantity: updateQuantity.quantity,
+        },
+      };
+      const result = await carCollection.updateOne(filter, updateDoc, options);
+      res.send(result);
+    });
   } finally {
   }
 }
