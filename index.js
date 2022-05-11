@@ -11,6 +11,15 @@ require("dotenv").config();
 app.use(cors());
 app.use(express.json());
 
+function verifyJWT(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).send({ message: "unauthorized access" });
+  }
+  console.log("inside verify", authHeader);
+  next();
+}
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.nmff0.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
@@ -22,6 +31,7 @@ async function run() {
   try {
     await client.connect();
     const carCollection = client.db("hummer").collection("car");
+    const itemCollection = client.db("hummer").collection("myitem");
 
     // get inventory
 
@@ -98,6 +108,15 @@ async function run() {
         expiresIn: "1d",
       });
       res.send({ accessToken });
+    });
+
+    // get myitem
+    app.get("/myitem", verifyJWT, async (req, res) => {
+      const email = req.query.email;
+      const query = { email: email };
+      const cursor = itemCollection.find(query);
+      const myitem = await cursor.toArray();
+      res.send(myitem);
     });
   } finally {
   }
